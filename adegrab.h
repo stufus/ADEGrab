@@ -3,3 +3,5 @@
 
 
 #include "resource.h"
+
+#define CM_TRAY	WM_USER+1
