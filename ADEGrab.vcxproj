@@ -64,6 +64,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="adegrab.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +72,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="adegrab.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="adegrab.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
