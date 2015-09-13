@@ -1,0 +1,49 @@
+﻿Build started 13/09/2015 23:47:14.
+     1>Project "C:\Users\Stuart\Documents\GitHub\ADEGrab\ADEGrab.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt adegrab.c
+         adegrab.c
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(12): warning C4047: 'function' : 'STRSAFE_LPWSTR' differs in levels of indirection from 'TCHAR (*)[100]'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(12): warning C4024: 'StringCbPrintfW' : different types for formal and actual parameter 1
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(25): warning C4047: 'function' : 'UINT' differs in levels of indirection from 'LPWSTR'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(25): warning C4024: 'GetMenuItemInfoW' : different types for formal and actual parameter 2
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(30): warning C4047: 'function' : 'UINT' differs in levels of indirection from 'LPWSTR'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(30): warning C4024: 'GetMenuItemInfoW' : different types for formal and actual parameter 2
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(35): warning C4047: 'function' : 'STRSAFE_LPWSTR' differs in levels of indirection from 'TCHAR (*)[100]'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(35): warning C4024: 'StringCbPrintfW' : different types for formal and actual parameter 1
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(38): warning C4047: 'function' : 'STRSAFE_LPWSTR' differs in levels of indirection from 'TCHAR (*)[100]'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(38): warning C4024: 'StringCbPrintfW' : different types for formal and actual parameter 1
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(40): warning C4047: 'function' : 'TCHAR *' differs in levels of indirection from 'TCHAR (*)[100]'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(40): warning C4024: 'addLog' : different types for formal and actual parameter 2
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(71): warning C4047: 'function' : 'WPARAM' differs in levels of indirection from 'void *'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(71): warning C4024: 'SendMessageW' : different types for formal and actual parameter 3
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(71): warning C4047: 'function' : 'LPARAM' differs in levels of indirection from 'void *'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(71): warning C4024: 'SendMessageW' : different types for formal and actual parameter 4
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(76): warning C4047: 'function' : 'WPARAM' differs in levels of indirection from 'void *'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(76): warning C4024: 'SendMessageW' : different types for formal and actual parameter 3
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(76): warning C4047: 'function' : 'LPARAM' differs in levels of indirection from 'void *'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(76): warning C4024: 'SendMessageW' : different types for formal and actual parameter 4
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(115): warning C4047: 'function' : 'WPARAM' differs in levels of indirection from 'void *'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(115): warning C4024: 'SendMessageW' : different types for formal and actual parameter 3
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(115): warning C4047: 'function' : 'LPARAM' differs in levels of indirection from 'void *'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(115): warning C4024: 'SendMessageW' : different types for formal and actual parameter 4
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(121): warning C4047: 'function' : 'INT_PTR' differs in levels of indirection from 'void *'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(121): warning C4024: 'EndDialog' : different types for formal and actual parameter 2
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(137): warning C4047: 'function' : 'LPARAM' differs in levels of indirection from 'void *'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(137): warning C4024: 'SendMessageW' : different types for formal and actual parameter 4
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(144): warning C4047: 'function' : 'WPARAM' differs in levels of indirection from 'void *'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(144): warning C4024: 'PostMessageW' : different types for formal and actual parameter 3
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(144): warning C4047: 'function' : 'LPARAM' differs in levels of indirection from 'void *'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(144): warning C4024: 'PostMessageW' : different types for formal and actual parameter 4
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(162): warning C4028: formal parameter 3 different from declaration
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(168): warning C4047: 'function' : 'LPARAM' differs in levels of indirection from 'void *'
+     1>c:\users\stuart\documents\github\adegrab\adegrab.c(168): warning C4024: 'DialogBoxParamW' : different types for formal and actual parameter 5
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Stuart\Documents\GitHub\ADEGrab\Debug\ADEGrab.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Stuart\Documents\GitHub\ADEGrab\Debug\ADEGrab.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Stuart\Documents\GitHub\ADEGrab\Debug\ADEGrab.lib" /MACHINE:X86 Debug\ADEGrab.res
+         Debug\adegrab.obj
+         ADEGrab.vcxproj -> C:\Users\Stuart\Documents\GitHub\ADEGrab\Debug\ADEGrab.exe
+     1>Done Building Project "C:\Users\Stuart\Documents\GitHub\ADEGrab\ADEGrab.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.62
