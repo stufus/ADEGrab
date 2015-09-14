@@ -9,7 +9,7 @@ void addLog(HWND hDlg, TCHAR *message) {
 	TCHAR buf[400] = { 0 };
 
 	GetLocalTime(&lt);
-	StringCbPrintf(&buf, 400, TEXT("[%d/%d/%d %d:%d:%d] %s"), lt.wDay, lt.wMonth, lt.wYear, lt.wHour, lt.wMinute, lt.wSecond, message);
+	StringCbPrintf((STRSAFE_LPWSTR) &buf, 400, TEXT("[%d/%d/%d %d:%d:%d] %s"), lt.wDay, lt.wMonth, lt.wYear, lt.wHour, lt.wMinute, lt.wSecond, message);
 	SendDlgItemMessage(hDlg, LIST_LOG, LB_ADDSTRING, 0, (LPARAM)&buf);
 }
 
@@ -47,8 +47,8 @@ void performADExplorerCapture(HWND hDlg, HMENU menu) {
 		if (ADExplorerListView = FindWindowExW(ADExplorer, NULL, TEXT("SysListView32"), TEXT("List1"))) {
 
 			// Update log
-			StringCbPrintf(&log, 300, TEXT("Found AD Explorer listbox (Handle: %d)."), ADExplorerListView);
-			addLog(hDlg, &log);
+			StringCbPrintf((STRSAFE_LPWSTR) &log, 300, TEXT("Found AD Explorer listbox (Handle: %d)."), ADExplorerListView);
+			addLog(hDlg, (TCHAR *) &log);
 
 			// Now get the process Id and thread ID of the AD Explorer process
 			if (threadId = GetWindowThreadProcessId(ADExplorerListView, &processId)) {
@@ -57,20 +57,20 @@ void performADExplorerCapture(HWND hDlg, HMENU menu) {
 				if (remoteProcess = OpenProcess(PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE, FALSE, processId)) {
 
 					StringCbPrintf(&log, 300, TEXT("Opened AD Explorer process (Handle: %d)."), remoteProcess);
-					addLog(hDlg, &log);
+					addLog(hDlg, (TCHAR *) &log);
 
 					// Make sure there are some items in the listview
 					if (itemCount = ListView_GetItemCount(ADExplorerListView)) {
 
 						StringCbPrintf(&log, 300, TEXT("Found %d item(s)."), itemCount);
-						addLog(hDlg, &log);
+						addLog(hDlg, (TCHAR *) &log);
 
 						// Allocate the main buffer which is (num_items * max size) + \r\n
 						maxchars = 2 + (itemCount*MAX_BUFFER_SIZE);
 						completebuffer_unicode = calloc(sizeof(TCHAR), maxchars);
 
 						StringCbPrintf(&log, 300, TEXT("Temporary buffer is %d chars (unicode = 2x)."), maxchars);
-						addLog(hDlg, &log);
+						addLog(hDlg, (TCHAR *) &log);
 
 						// Allocate memory in remote process in the format [LVITEM][TCHAR String][NULL]
 						remoteMemory = (DWORD)VirtualAllocEx(remoteProcess, NULL, sizeof(LVQuery), MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
@@ -112,7 +112,7 @@ void performADExplorerCapture(HWND hDlg, HMENU menu) {
 						completebuffer_ansi = calloc(sizeof(CHAR), cbansi_size);
 						if (cbansi_size && WideCharToMultiByte(CP_UTF8, NULL, completebuffer_unicode, -1, completebuffer_ansi, cbansi_size, NULL, NULL)) {
 							StringCbPrintf(&log, 300, TEXT("Converted %d characters to ANSI (multibyte) from Unicode."), cbansi_size);
-							addLog(hDlg, &log);
+							addLog(hDlg, (TCHAR *) &log);
 						}
 
 						// Write to clipboard?
@@ -125,7 +125,7 @@ void performADExplorerCapture(HWND hDlg, HMENU menu) {
 							EmptyClipboard();
 							if (SetClipboardData(CF_TEXT, hClipboardMem)) {
 								StringCbPrintf(&log, 300, TEXT("Written %d characters to clipboard."), cbansi_size);
-								addLog(hDlg, &log);
+								addLog(hDlg, (TCHAR *) &log);
 							}
 							CloseClipboard();
 						}
@@ -142,13 +142,13 @@ void performADExplorerCapture(HWND hDlg, HMENU menu) {
 							else {
 								StringCbPrintf(&log, 300, TEXT("Unable to open output file (Error %d)."), GetLastError());
 							}
-							addLog(hDlg, &log);
+							addLog(hDlg, (TCHAR *) &log);
 						}
 
 						free(completebuffer_ansi);
 						free(completebuffer_unicode);
 						// Clean up
-						VirtualFreeEx(remoteProcess, (LPVOID)remoteMemory, NULL, MEM_RELEASE);
+						VirtualFreeEx(remoteProcess, (LPVOID)remoteMemory, (SIZE_T) NULL, MEM_RELEASE);
 						CloseHandle(remoteProcess);
 					}
 
