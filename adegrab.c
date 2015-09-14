@@ -4,6 +4,67 @@ NOTIFYICONDATA ico = { 0 };
 HINSTANCE hInstance;
 HMENU popup, popup_sub;
 
+HWND GetADExplorerListViewWindow() {
+	HWND ADExplorer;
+	HWND ADExplorerListView;
+	int counter;
+	int items;
+	ADMemInject LVQuery;
+	DWORD processId;
+	DWORD threadId;
+
+	HANDLE remoteProcess;
+	DWORD remoteMemory;
+	DWORD err;
+
+	// Retrieve the encompassing window
+	if (ADExplorer = FindWindowExW(NULL, NULL, TEXT("#32770"), TEXT("Search Container"))) {
+
+		// Now retrieve the handle of the specific listview
+		if (ADExplorerListView = FindWindowExW(ADExplorer, NULL, TEXT("SysListView32"), TEXT("List1"))) {
+
+			// Now get the process Id and thread ID of the AD Explorer process
+			if (threadId = GetWindowThreadProcessId(ADExplorerListView, &processId)) {
+
+				// Obtain privileges that we will need to write to its memory
+				if (remoteProcess = OpenProcess(PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE, FALSE, processId)) {
+
+					// Allocate memory in remote process in the format [LVITEM][TCHAR String][NULL]
+					remoteMemory = (DWORD)VirtualAllocEx(remoteProcess, NULL, sizeof(LVQuery), MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+					SecureZeroMemory((PVOID)&LVQuery, sizeof(LVQuery));
+
+					// Fill in the local listitem struct to perform the query
+					LVQuery.li.cchTextMax = MAX_BUFFER_SIZE;
+					LVQuery.li.pszText = (LPWSTR)remoteMemory + sizeof(LVQuery.li);
+					LVQuery.li.mask = LVIF_TEXT | LVIF_COLUMNS;
+					LVQuery.li.iItem = 0;
+					LVQuery.li.iSubItem = 0;
+
+					// Write the listitem struct to AD Explorer's memory
+					WriteProcessMemory(remoteProcess, (LPVOID)remoteMemory, &LVQuery, sizeof(LVQuery), NULL);
+
+					// Request the text from the ListView control
+					SendMessage(ADExplorerListView, LVM_GETITEM, NULL, remoteMemory);
+
+					// Read from the process - retrieve the initial LVITEM and then retrieve the buffer
+					// It is necessary to do this twice because there is no guarantee that the result is written to the buffer that we offered
+					ReadProcessMemory(remoteProcess, (LPVOID)remoteMemory, &(LVQuery.li), sizeof(LVQuery.li), NULL);
+					ReadProcessMemory(remoteProcess, (LPVOID)LVQuery.li.pszText, &(LVQuery.buffer), sizeof(LVQuery.buffer), NULL);
+
+					// MessageBox for debugging
+					MessageBox(NULL, (LPCWSTR)LVQuery.buffer, NULL, NULL);
+
+					// Clean up
+					VirtualFreeEx(remoteProcess, (LPVOID)remoteMemory, NULL, MEM_RELEASE);
+					CloseHandle(remoteProcess);
+				}
+			}
+		}
+	}
+
+	return NULL;
+}
+
 void addLog(HWND hDlg, TCHAR *message) {
 	SYSTEMTIME lt;
 	TCHAR buf[100] = { 0 };
