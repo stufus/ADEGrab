@@ -28,7 +28,7 @@ Additional functionality that I will stabilise and release will include:
 # Downloads
 
 AD Explorer v1.44 can be downloaded at https://download.sysinternals.com/files/AdExplorer.zip
-- Homepage: https://technet.microsoft.com/en-GB/sysinternals/bb963907.aspx
+Homepage: https://technet.microsoft.com/en-GB/sysinternals/bb963907.aspx
  
 
 
