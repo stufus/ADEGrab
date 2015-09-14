@@ -9,8 +9,33 @@ void addLog(HWND hDlg, TCHAR *message) {
 	TCHAR buf[400] = { 0 };
 
 	GetLocalTime(&lt);
-	StringCbPrintf((STRSAFE_LPSTR) &buf, 400, TEXT("[%d/%d/%d %d:%d:%d] %s"), lt.wDay, lt.wMonth, lt.wYear, lt.wHour, lt.wMinute, lt.wSecond, message);
+	StringCbPrintf((STRSAFE_LPSTR) &buf, 400, TEXT("[%02d/%02d/%02d %02d:%02d:%02d.%d] %s"), lt.wDay, lt.wMonth, lt.wYear, lt.wHour, lt.wMinute, lt.wSecond, lt.wMilliseconds, message);
 	SendDlgItemMessage(hDlg, LIST_LOG, LB_ADDSTRING, 0, (LPARAM)&buf);
+}
+
+void trayIcon(HWND hDlg) {
+	ico.cbSize = sizeof(NOTIFYICONDATA);
+	ico.uID = 0;
+	ico.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+	StringCchCopy(ico.szTip, ARRAYSIZE(ico.szTip), ADEGRAB_IDENTIFIER);
+	ico.hWnd = hDlg;
+	ico.uCallbackMessage = CM_TRAY;
+	ico.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(ICO_MAINICON));
+	Shell_NotifyIcon(NIM_ADD, &ico);
+}
+
+void trayMessage(HWND hDlg, TCHAR *title, TCHAR *msg) {
+	NOTIFYICONDATA ni = { 0 };
+	ni.cbSize = sizeof(NOTIFYICONDATA);
+	ni.uID = 0;
+	ni.hWnd = hDlg;
+	ni.uFlags = NIF_INFO;
+	StringCchCopy(ni.szInfo, ARRAYSIZE(ni.szInfo), msg);
+	StringCchCopy(ni.szInfoTitle, ARRAYSIZE(ni.szInfoTitle), title);
+	ni.uCallbackMessage = CM_TRAY;
+	ni.dwInfoFlags = NIIF_INFO;
+	ni.uTimeout = 5;
+	Shell_NotifyIcon(NIM_MODIFY, &ni);
 }
 
 void performADExplorerCapture(HWND hDlg, HMENU menu) {
@@ -69,7 +94,7 @@ void performADExplorerCapture(HWND hDlg, HMENU menu) {
 						maxchars = 2 + (itemCount*MAX_BUFFER_SIZE);
 						completebuffer_unicode = calloc(sizeof(TCHAR), maxchars);
 
-						StringCbPrintf(&log, 300, TEXT("Temporary buffer is %d chars (unicode = 2x)."), maxchars);
+						StringCbPrintf(&log, 300, TEXT("Temporary buffer is %d char(s) (%d byte(s))."), maxchars, sizeof(TCHAR)*maxchars);
 						addLog(hDlg, (TCHAR *) &log);
 
 						// Allocate memory in remote process in the format [LVITEM][TCHAR String][NULL]
@@ -106,48 +131,59 @@ void performADExplorerCapture(HWND hDlg, HMENU menu) {
 
 						}
 
+						// Set the "console" box with the final string
 						SetDlgItemText(hDlg, EDIT_CAPTURED, completebuffer_unicode);
 
-						cbansi_size = WideCharToMultiByte(CP_UTF8, NULL, completebuffer_unicode, -1, completebuffer_ansi, 0, NULL, NULL);
-						completebuffer_ansi = calloc(sizeof(CHAR), cbansi_size);
-						if (cbansi_size && WideCharToMultiByte(CP_UTF8, NULL, completebuffer_unicode, -1, completebuffer_ansi, cbansi_size, NULL, NULL)) {
-							StringCbPrintf(&log, 300, TEXT("Converted %d characters to ANSI (multibyte) from Unicode."), cbansi_size);
-							addLog(hDlg, (TCHAR *) &log);
-						}
+						// Only do the processing below if there was actually an item
+						if (itemCount) {
 
-						// Write to clipboard?
-						GetMenuItemInfo(menu, MAKEINTRESOURCE(ID_ADEGRAB_CAPTURETOCLIPBOARD), FALSE, &mi);
-						if (mi.fState & MFS_CHECKED) {
-							hClipboardMem = GlobalAlloc(GMEM_MOVEABLE, cbansi_size);
-							memcpy(GlobalLock(hClipboardMem), completebuffer_ansi, cbansi_size);
-							GlobalUnlock(hClipboardMem);
-							OpenClipboard(hDlg);
-							EmptyClipboard();
-							if (SetClipboardData(CF_TEXT, hClipboardMem)) {
-								StringCbPrintf(&log, 300, TEXT("Written %d characters to clipboard."), cbansi_size);
+							// Display the balloon tip
+							StringCbPrintf(&log, 300, TEXT("Captured %d result(s) from AD Explorer."), itemCount);
+							trayMessage(hDlg, ADEGRAB_IDENTIFIER, &log);
+
+							// Convert to ANSI from Unicode
+							cbansi_size = WideCharToMultiByte(CP_UTF8, NULL, completebuffer_unicode, -1, completebuffer_ansi, 0, NULL, NULL);
+							completebuffer_ansi = calloc(sizeof(CHAR), cbansi_size);
+							if (cbansi_size && WideCharToMultiByte(CP_UTF8, NULL, completebuffer_unicode, -1, completebuffer_ansi, cbansi_size, NULL, NULL)) {
+								StringCbPrintf(&log, 300, TEXT("Converted %d characters to ANSI (multibyte) from Unicode."), cbansi_size);
 								addLog(hDlg, (TCHAR *) &log);
 							}
-							CloseClipboard();
+
+							// Write to clipboard?
+							GetMenuItemInfo(menu, MAKEINTRESOURCE(ID_ADEGRAB_CAPTURETOCLIPBOARD), FALSE, &mi);
+							if (mi.fState & MFS_CHECKED) {
+								hClipboardMem = GlobalAlloc(GMEM_MOVEABLE, cbansi_size);
+								memcpy(GlobalLock(hClipboardMem), completebuffer_ansi, cbansi_size);
+								GlobalUnlock(hClipboardMem);
+								OpenClipboard(hDlg);
+								EmptyClipboard();
+								if (SetClipboardData(CF_TEXT, hClipboardMem)) {
+									StringCbPrintf(&log, 300, TEXT("Written %d characters to clipboard."), cbansi_size);
+									addLog(hDlg, (TCHAR *) &log);
+								}
+								CloseClipboard();
+							}
+
+							// Save to file?
+							GetMenuItemInfo(menu, MAKEINTRESOURCE(ID_ADEGRAB_CAPTURETOLOGFILE), FALSE, &mi);
+							if (mi.fState & MFS_CHECKED) {
+								if (hFile = CreateFile(TEXT("adegrab.log"), FILE_GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0)) {
+									SetFilePointer(hFile, 0, NULL, FILE_END);
+									WriteFile(hFile, completebuffer_ansi, cbansi_size-1, &dwWritten, NULL);
+									StringCbPrintf(&log, 300, TEXT("Written %d byte(s) to output file."), dwWritten);
+									CloseHandle(hFile);
+								}
+								else {
+									StringCbPrintf(&log, 300, TEXT("Unable to open output file (Error %d)."), GetLastError());
+								}
+								addLog(hDlg, (TCHAR *) &log);
+							}
+
 						}
 
-						// Save to file?
-						GetMenuItemInfo(menu, MAKEINTRESOURCE(ID_ADEGRAB_CAPTURETOLOGFILE), FALSE, &mi);
-						if (mi.fState & MFS_CHECKED) {
-							if (hFile = CreateFile(TEXT("adegrab.log"), FILE_GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0)) {
-								SetFilePointer(hFile, 0, NULL, FILE_END);
-								WriteFile(hFile, completebuffer_ansi, cbansi_size-1, &dwWritten, NULL);
-								StringCbPrintf(&log, 300, TEXT("Written %d byte(s) to output file."), dwWritten);
-								CloseHandle(hFile);
-							}
-							else {
-								StringCbPrintf(&log, 300, TEXT("Unable to open output file (Error %d)."), GetLastError());
-							}
-							addLog(hDlg, (TCHAR *) &log);
-						}
-
+						// Clean up
 						free(completebuffer_ansi);
 						free(completebuffer_unicode);
-						// Clean up
 						VirtualFreeEx(remoteProcess, (LPVOID)remoteMemory, (SIZE_T) NULL, MEM_RELEASE);
 						CloseHandle(remoteProcess);
 					}
@@ -161,16 +197,6 @@ void performADExplorerCapture(HWND hDlg, HMENU menu) {
 		addLog(hDlg, TEXT("Unable to find Search Container window."));
 	}
 
-}
-
-void trayIcon(HWND hDlg) {
-	ico.cbSize = sizeof(NOTIFYICONDATA);
-	ico.uID = 0;
-	ico.uFlags = NIF_ICON | NIF_MESSAGE;
-	ico.hWnd = hDlg;
-	ico.uCallbackMessage = CM_TRAY;
-	ico.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(ICO_MAINICON));
-	Shell_NotifyIcon(NIM_ADD, &ico);
 }
 
 // Message loop for main box
@@ -252,7 +278,7 @@ int CALLBACK mainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
 			trayIcon(hDlg);
 			SetMenu(hDlg, popup);
 			ShowWindow(hDlg, SW_SHOWNORMAL);
-			addLog(hDlg, TEXT(ADEGRAB_IDENTIFIER));
+			addLog(hDlg, ADEGRAB_IDENTIFIER);
 			break;
 
 		case CM_TRAY:
