@@ -30,3 +30,18 @@
 
 # Debug files
 *.dSYM/
+
+Debug/*
+Release/*
+*.log
+*.aps
+*.exe
+*.idb
+*.ipch
+*.lib
+*.obj
+*.sdf
+*.suo
+*.tlog
+
+*.user
