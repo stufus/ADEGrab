@@ -1,7 +1,7 @@
 # ADEGrab
 Anyone who has used the Sysinternals AD Explorer tool will know that it is very useful, especially for rapid offline analysis of an AD structure which, for example, has been acquired during a penetration test in order to gain situational awareness.
 
-One of the unfortunate limitations of AD Explorer is that you cannot copy/paste or select the results from the Search Container. ADEGrab circumvents this problem by reaidng the contents of the ListView control and copying to clipboard or saving to a file, which should allow testers to parse this information or use it as part of other tools.
+One of the unfortunate limitations of AD Explorer is that you cannot copy/paste or select the results from the Search Container. ADEGrab circumvents this problem by reading the contents of the ListView control and copying to clipboard or saving to a file, which should allow testers to parse this information or use it as part of other tools.
 
 # Internals
 Initially, I wrote a DLL to hook the windows messages to AD Explorer's ListView control; my plan was simply to intercept the LVM_INSERTITEM message and read the lParam->pszText item in the LVITEM struct. However, it seems that they chose to set pszText to LPSTR_TEXTCALLBACK and use notify messages to actually set the text. It would be more complicated to hook those messages because it would involve intercepting WM_NOTIFY messages, identifying LVN_GETDISPINFO requests and intercepting the responses. 
