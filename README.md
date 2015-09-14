@@ -19,13 +19,6 @@ Primarily, I use it by minimising ADEGrab to the tray, double-clicking it whenev
 
 Note that ADEGrab opens and closes all handles on each capture attempt. This means that it does not matter whether you load ADEGrab first, or AD Explorer first, or whether you close or open them.
 
-# Further Development
-
-Additional functionality that I will stabilise and release will include:
-- Optionally grab all columns from the Search Container.
-- Optionally choose the output file.
-- Fix the compiler warnings.
-
 # Downloads
 
 AD Explorer v1.44 can be downloaded at https://download.sysinternals.com/files/AdExplorer.zip
@@ -41,5 +34,13 @@ If you want to compile and run it yourself, just open ADEGrab.sln in Visual Stud
 
 There are a whole bunch of compiler warnings, mainly because I have not casted variables properly. This is because this started as a quick and dirty project.
 
+# Further Development
+
+Additional functionality that I will stabilise and release will include:
+- Optionally grab all columns from the Search Container.
+- Optionally choose the output file.
+- Fix the compiler warnings.
+
 # Disclaimer
+
 This was a tool that I put together in an evening in order to solve a problem. It has not been thoroughly tested against every possible scenario, but is a handy tool if you are in this position. 
