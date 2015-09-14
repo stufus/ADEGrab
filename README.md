@@ -25,5 +25,9 @@ Additional functionality that I will stabilise and release will include:
 - Optionally grab all columns from the Search Container.
 - Optionally choose the output file.
 
+# Downloads
+
+AD Explorer v1.44 can be downloaded at https://download.sysinternals.com/files/AdExplorer.zip (Homepage: https://technet.microsoft.com/en-GB/sysinternals/bb963907.aspx)
+
 # Disclaimer
 This was a tool that I put together in an evening in order to solve a problem. It has not been thoroughly tested against every possible scenario, but is a handy tool if you are in this position. 
