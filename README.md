@@ -11,12 +11,9 @@ A simpler method is to send windows messages such as LVM_GETITEM to the ListView
 # Usage
 - Load AD Explorer and connect to the domain that you wish to browse.
 - Load the 'Search Container' (i.e. Search for something).
-- Execute ADEGrab.
--- If you minimise it, it will go to the tray.
-- Double-click the tray icon, right-click the tray icon and select 'Capture' or press the 'Capture' button on the GUI.
--- ADEGrab will retrieve the first column of the Search results and display it on the main GUI.
---- If 'Capture to Clipboard' is selected, ADEGrab will convert the results from Unicode to ANSI and save them to the clipboard.
---- If 'Capture to Log File' is selected, ADEGrab will convert the results from Unicode to ANSI and append them to 'adegrab.log'.
+- Execute ADEGrab. If you minimise it, it will go to the tray.
+- Double-click the tray icon, right-click the tray icon and select 'Capture' or press the 'Capture' button on the GUI. ADEGrab will retrieve the first column of the Search results and display it on the main GUI. If 'Capture to Clipboard' is selected, ADEGrab will convert the results from Unicode to ANSI and save them to the clipboard.
+- If 'Capture to Log File' is selected, ADEGrab will convert the results from Unicode to ANSI and append them to 'adegrab.log'.
 
 Primarily, I use it by minimising ADEGrab to the tray, double-clicking it whenever I want to save the results and then pasting into whatever file I want. This works across VMs (tested on VirtualBox) as long as VirtualBox tools are installed and Clipboard is set to bidirectional.
 
