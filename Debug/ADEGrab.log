@@ -1,1 +1,70 @@
-﻿
+﻿Build started 14/09/2015 12:20:36.
+Project "S:\ADEGrabR2\ADEGrab.vcxproj" on node 2 (Build target(s)).
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt adegrab.c
+  adegrab.c
+s:\adegrabr2\adegrab.c(12): warning C4047: 'function' : 'STRSAFE_LPWSTR' differs in levels of indirection from 'TCHAR (*)[400]'
+s:\adegrabr2\adegrab.c(12): warning C4024: 'StringCbPrintfW' : different types for formal and actual parameter 1
+s:\adegrabr2\adegrab.c(44): warning C4047: 'function' : 'STRSAFE_LPWSTR' differs in levels of indirection from 'TCHAR (*)[300]'
+s:\adegrabr2\adegrab.c(44): warning C4024: 'StringCbPrintfW' : different types for formal and actual parameter 1
+s:\adegrabr2\adegrab.c(45): warning C4047: 'function' : 'TCHAR *' differs in levels of indirection from 'TCHAR (*)[300]'
+s:\adegrabr2\adegrab.c(45): warning C4024: 'addLog' : different types for formal and actual parameter 2
+s:\adegrabr2\adegrab.c(53): warning C4047: 'function' : 'STRSAFE_LPWSTR' differs in levels of indirection from 'TCHAR (*)[300]'
+s:\adegrabr2\adegrab.c(53): warning C4024: 'StringCbPrintfW' : different types for formal and actual parameter 1
+s:\adegrabr2\adegrab.c(54): warning C4047: 'function' : 'TCHAR *' differs in levels of indirection from 'TCHAR (*)[300]'
+s:\adegrabr2\adegrab.c(54): warning C4024: 'addLog' : different types for formal and actual parameter 2
+s:\adegrabr2\adegrab.c(58): warning C4047: 'function' : 'STRSAFE_LPWSTR' differs in levels of indirection from 'TCHAR (*)[300]'
+s:\adegrabr2\adegrab.c(58): warning C4024: 'StringCbPrintfW' : different types for formal and actual parameter 1
+s:\adegrabr2\adegrab.c(59): warning C4047: 'function' : 'TCHAR *' differs in levels of indirection from 'TCHAR (*)[300]'
+s:\adegrabr2\adegrab.c(59): warning C4024: 'addLog' : different types for formal and actual parameter 2
+s:\adegrabr2\adegrab.c(80): warning C4047: 'function' : 'WPARAM' differs in levels of indirection from 'void *'
+s:\adegrabr2\adegrab.c(80): warning C4024: 'SendMessageW' : different types for formal and actual parameter 3
+s:\adegrabr2\adegrab.c(88): warning C4047: 'function' : 'UINT' differs in levels of indirection from 'void *'
+s:\adegrabr2\adegrab.c(88): warning C4024: 'MessageBoxW' : different types for formal and actual parameter 4
+s:\adegrabr2\adegrab.c(91): warning C4047: 'function' : 'UINT' differs in levels of indirection from 'LPWSTR'
+s:\adegrabr2\adegrab.c(91): warning C4024: 'GetMenuItemInfoW' : different types for formal and actual parameter 2
+s:\adegrabr2\adegrab.c(97): warning C4047: 'function' : 'UINT' differs in levels of indirection from 'LPWSTR'
+s:\adegrabr2\adegrab.c(97): warning C4024: 'GetMenuItemInfoW' : different types for formal and actual parameter 2
+s:\adegrabr2\adegrab.c(102): warning C4047: 'function' : 'STRSAFE_LPWSTR' differs in levels of indirection from 'TCHAR (*)[300]'
+s:\adegrabr2\adegrab.c(102): warning C4024: 'StringCbPrintfW' : different types for formal and actual parameter 1
+s:\adegrabr2\adegrab.c(106): warning C4047: 'function' : 'STRSAFE_LPWSTR' differs in levels of indirection from 'TCHAR (*)[300]'
+s:\adegrabr2\adegrab.c(106): warning C4024: 'StringCbPrintfW' : different types for formal and actual parameter 1
+s:\adegrabr2\adegrab.c(108): warning C4047: 'function' : 'TCHAR *' differs in levels of indirection from 'TCHAR (*)[300]'
+s:\adegrabr2\adegrab.c(108): warning C4024: 'addLog' : different types for formal and actual parameter 2
+s:\adegrabr2\adegrab.c(115): warning C4047: 'function' : 'SIZE_T' differs in levels of indirection from 'void *'
+s:\adegrabr2\adegrab.c(115): warning C4024: 'VirtualFreeEx' : different types for formal and actual parameter 3
+s:\adegrabr2\adegrab.c(32): warning C4101: 'err' : unreferenced local variable
+s:\adegrabr2\adegrab.c(156): warning C4047: 'function' : 'WPARAM' differs in levels of indirection from 'void *'
+s:\adegrabr2\adegrab.c(156): warning C4024: 'SendMessageW' : different types for formal and actual parameter 3
+s:\adegrabr2\adegrab.c(156): warning C4047: 'function' : 'LPARAM' differs in levels of indirection from 'void *'
+s:\adegrabr2\adegrab.c(156): warning C4024: 'SendMessageW' : different types for formal and actual parameter 4
+s:\adegrabr2\adegrab.c(161): warning C4047: 'function' : 'WPARAM' differs in levels of indirection from 'void *'
+s:\adegrabr2\adegrab.c(161): warning C4024: 'SendMessageW' : different types for formal and actual parameter 3
+s:\adegrabr2\adegrab.c(161): warning C4047: 'function' : 'LPARAM' differs in levels of indirection from 'void *'
+s:\adegrabr2\adegrab.c(161): warning C4024: 'SendMessageW' : different types for formal and actual parameter 4
+s:\adegrabr2\adegrab.c(200): warning C4047: 'function' : 'WPARAM' differs in levels of indirection from 'void *'
+s:\adegrabr2\adegrab.c(200): warning C4024: 'SendMessageW' : different types for formal and actual parameter 3
+s:\adegrabr2\adegrab.c(200): warning C4047: 'function' : 'LPARAM' differs in levels of indirection from 'void *'
+s:\adegrabr2\adegrab.c(200): warning C4024: 'SendMessageW' : different types for formal and actual parameter 4
+s:\adegrabr2\adegrab.c(206): warning C4047: 'function' : 'INT_PTR' differs in levels of indirection from 'void *'
+s:\adegrabr2\adegrab.c(206): warning C4024: 'EndDialog' : different types for formal and actual parameter 2
+s:\adegrabr2\adegrab.c(222): warning C4047: 'function' : 'LPARAM' differs in levels of indirection from 'void *'
+s:\adegrabr2\adegrab.c(222): warning C4024: 'SendMessageW' : different types for formal and actual parameter 4
+s:\adegrabr2\adegrab.c(229): warning C4047: 'function' : 'WPARAM' differs in levels of indirection from 'void *'
+s:\adegrabr2\adegrab.c(229): warning C4024: 'PostMessageW' : different types for formal and actual parameter 3
+s:\adegrabr2\adegrab.c(229): warning C4047: 'function' : 'LPARAM' differs in levels of indirection from 'void *'
+s:\adegrabr2\adegrab.c(229): warning C4024: 'PostMessageW' : different types for formal and actual parameter 4
+s:\adegrabr2\adegrab.c(247): warning C4028: formal parameter 3 different from declaration
+s:\adegrabr2\adegrab.c(253): warning C4047: 'function' : 'LPARAM' differs in levels of indirection from 'void *'
+s:\adegrabr2\adegrab.c(253): warning C4024: 'DialogBoxParamW' : different types for formal and actual parameter 5
+ResourceCompile:
+  C:\Program Files (x86)\Windows Kits\8.1\bin\x86\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Debug\ADEGrab.res" ADEGrab.rc 
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"S:\ADEGrabR2\Debug\ADEGrab.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"S:\ADEGrabR2\Debug\ADEGrab.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"S:\ADEGrabR2\Debug\ADEGrab.lib" /MACHINE:X86 Debug\ADEGrab.res
+  Debug\adegrab.obj
+  ADEGrab.vcxproj -> S:\ADEGrabR2\Debug\ADEGrab.exe
+Done Building Project "S:\ADEGrabR2\ADEGrab.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.90
