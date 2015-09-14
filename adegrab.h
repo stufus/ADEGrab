@@ -7,7 +7,7 @@
 
 #define CM_TRAY	WM_USER+3
 #define ADEGRAB_IDENTIFIER "ADEGrab v1.0"
-#define MAX_BUFFER_SIZE 100
+#define MAX_BUFFER_SIZE 250
 
 typedef struct _ADMemInject {
 	LVITEM li;

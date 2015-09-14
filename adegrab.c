@@ -23,14 +23,20 @@ void performADExplorerCapture(HWND hDlg, HMENU menu) {
 	HWND ADExplorerListView;
 	int counter;
 	int itemCount;
+	int maxchars;
 	ADMemInject LVQuery;
 	DWORD processId;
 	DWORD threadId;
+	HGLOBAL hClipboardMem;
 
 	HANDLE remoteProcess;
 	DWORD remoteMemory;
 	DWORD err;
 	
+	TCHAR *completebuffer_unicode = NULL;
+	int cbansi_size = NULL;
+	char *completebuffer_ansi = NULL;
+
 	mi.cbSize = sizeof(MENUITEMINFO);
 	mi.fMask = MIIM_STATE;
 
@@ -53,9 +59,17 @@ void performADExplorerCapture(HWND hDlg, HMENU menu) {
 					StringCbPrintf(&log, 300, TEXT("Opened AD Explorer process (Handle: %d)."), remoteProcess);
 					addLog(hDlg, &log);
 
+					// Make sure there are some items in the listview
 					if (itemCount = ListView_GetItemCount(ADExplorerListView)) {
 
 						StringCbPrintf(&log, 300, TEXT("Found %d item(s)."), itemCount);
+						addLog(hDlg, &log);
+
+						// Allocate the main buffer which is (num_items * max size) + \r\n
+						maxchars = 2 + (itemCount*MAX_BUFFER_SIZE);
+						completebuffer_unicode = calloc(sizeof(TCHAR), maxchars);
+
+						StringCbPrintf(&log, 300, TEXT("Temporary buffer is %d chars (unicode = 2x)."), maxchars);
 						addLog(hDlg, &log);
 
 						// Allocate memory in remote process in the format [LVITEM][TCHAR String][NULL]
@@ -84,33 +98,55 @@ void performADExplorerCapture(HWND hDlg, HMENU menu) {
 							ReadProcessMemory(remoteProcess, (LPVOID)remoteMemory, &(LVQuery.li), sizeof(LVQuery.li), NULL);
 							ReadProcessMemory(remoteProcess, (LPVOID)LVQuery.li.pszText, &(LVQuery.buffer), sizeof(LVQuery.buffer), NULL);
 
-							// MessageBox for debugging
-							MessageBox(NULL, (LPCWSTR)LVQuery.buffer, NULL, NULL);
-
-							// Write to clipboard?
-							GetMenuItemInfo(menu, MAKEINTRESOURCE(ID_ADEGRAB_CAPTURETOCLIPBOARD), FALSE, &mi);
-							if (mi.fState & MFS_CHECKED) {
-								// Copy to clipboard
+							// Add the string to the main buffer
+							if (strlen(LVQuery.buffer)) {
+								StringCbCat(completebuffer_unicode, maxchars, LVQuery.buffer);
+								StringCbCat(completebuffer_unicode, maxchars, TEXT("\r\n"));
 							}
-
-							// Save to file?
-							GetMenuItemInfo(menu, MAKEINTRESOURCE(ID_ADEGRAB_CAPTURETOLOGFILE), FALSE, &mi);
-							if (mi.fState & MFS_CHECKED) {
-								if (hFile = CreateFile(TEXT("adegrab.log"), FILE_GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0)) {
-									SetFilePointer(hFile, 0, NULL, FILE_END);
-									WriteFile(hFile, "STUFUS", 6, &dwWritten, NULL);
-									StringCbPrintf(&log, 100, TEXT("Written %d byte(s) to output file."), dwWritten);
-									CloseHandle(hFile);
-								}
-								else {
-									StringCbPrintf(&log, 100, TEXT("Unable to open output file (Error %d)."), GetLastError());
-								}
-								addLog(hDlg, &log);
-							}
-
 
 						}
 
+						SetDlgItemText(hDlg, EDIT_CAPTURED, completebuffer_unicode);
+
+						cbansi_size = WideCharToMultiByte(CP_UTF8, NULL, completebuffer_unicode, -1, completebuffer_ansi, 0, NULL, NULL);
+						completebuffer_ansi = calloc(sizeof(CHAR), cbansi_size);
+						if (cbansi_size && WideCharToMultiByte(CP_UTF8, NULL, completebuffer_unicode, -1, completebuffer_ansi, cbansi_size, NULL, NULL)) {
+							StringCbPrintf(&log, 300, TEXT("Converted %d characters to ANSI (multibyte) from Unicode."), cbansi_size);
+							addLog(hDlg, &log);
+						}
+
+						// Write to clipboard?
+						GetMenuItemInfo(menu, MAKEINTRESOURCE(ID_ADEGRAB_CAPTURETOCLIPBOARD), FALSE, &mi);
+						if (mi.fState & MFS_CHECKED) {
+							hClipboardMem = GlobalAlloc(GMEM_MOVEABLE, cbansi_size);
+							memcpy(GlobalLock(hClipboardMem), completebuffer_ansi, cbansi_size);
+							GlobalUnlock(hClipboardMem);
+							OpenClipboard(hDlg);
+							EmptyClipboard();
+							if (SetClipboardData(CF_TEXT, hClipboardMem)) {
+								StringCbPrintf(&log, 300, TEXT("Written %d characters to clipboard."), cbansi_size);
+								addLog(hDlg, &log);
+							}
+							CloseClipboard();
+						}
+
+						// Save to file?
+						GetMenuItemInfo(menu, MAKEINTRESOURCE(ID_ADEGRAB_CAPTURETOLOGFILE), FALSE, &mi);
+						if (mi.fState & MFS_CHECKED) {
+							if (hFile = CreateFile(TEXT("adegrab.log"), FILE_GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0)) {
+								SetFilePointer(hFile, 0, NULL, FILE_END);
+								WriteFile(hFile, completebuffer_ansi, cbansi_size-1, &dwWritten, NULL);
+								StringCbPrintf(&log, 300, TEXT("Written %d byte(s) to output file."), dwWritten);
+								CloseHandle(hFile);
+							}
+							else {
+								StringCbPrintf(&log, 300, TEXT("Unable to open output file (Error %d)."), GetLastError());
+							}
+							addLog(hDlg, &log);
+						}
+
+						free(completebuffer_ansi);
+						free(completebuffer_unicode);
 						// Clean up
 						VirtualFreeEx(remoteProcess, (LPVOID)remoteMemory, NULL, MEM_RELEASE);
 						CloseHandle(remoteProcess);
@@ -157,6 +193,10 @@ int CALLBACK mainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
 					break;
 
 				// Menu options
+				case ID_ADEGRAB_RESTORE:
+					SendMessage(hDlg, WM_SYSCOMMAND, SC_RESTORE, NULL);
+					break;
+
 				case ID_ADEGRAB_EXIT:
 					SendMessage(hDlg, WM_DESTROY, NULL, NULL);
 					break;
@@ -218,8 +258,8 @@ int CALLBACK mainDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
 		case CM_TRAY:
 			if (wParam == 0) {
 				switch (lParam) {
-					case WM_LBUTTONUP:
-						SendMessage(hDlg, WM_SYSCOMMAND, SC_RESTORE, NULL);
+					case WM_LBUTTONDBLCLK:
+						performADExplorerCapture(hDlg, popup);
 						break;
 
 					case WM_RBUTTONUP:
