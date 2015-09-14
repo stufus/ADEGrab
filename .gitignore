@@ -44,3 +44,4 @@ Release/*
 *.suo
 *.tlog
 
+*.user
