@@ -4,7 +4,21 @@ NOTIFYICONDATA ico = { 0 };
 HINSTANCE hInstance;
 HMENU popup, popup_sub;
 
-HWND GetADExplorerListViewWindow() {
+void addLog(HWND hDlg, TCHAR *message) {
+	SYSTEMTIME lt;
+	TCHAR buf[100] = { 0 };
+
+	GetLocalTime(&lt);
+	StringCbPrintf(&buf, 100, TEXT("[%d/%d/%d %d:%d:%d] %s"), lt.wDay, lt.wMonth, lt.wYear, lt.wHour, lt.wMinute, lt.wSecond, message);
+	SendDlgItemMessage(hDlg, LIST_LOG, LB_ADDSTRING, 0, (LPARAM)&buf);
+}
+
+void performADExplorerCapture(HWND hDlg, HMENU menu) {
+	MENUITEMINFO mi = { 0 };
+	HANDLE hFile;
+	TCHAR log[100];
+	DWORD dwWritten;
+
 	HWND ADExplorer;
 	HWND ADExplorerListView;
 	int counter;
@@ -61,24 +75,6 @@ HWND GetADExplorerListViewWindow() {
 			}
 		}
 	}
-
-	return NULL;
-}
-
-void addLog(HWND hDlg, TCHAR *message) {
-	SYSTEMTIME lt;
-	TCHAR buf[100] = { 0 };
-
-	GetLocalTime(&lt);
-	StringCbPrintf(&buf, 100, TEXT("[%d/%d/%d %d:%d:%d] %s"), lt.wDay, lt.wMonth, lt.wYear, lt.wHour, lt.wMinute, lt.wSecond, message);
-	SendDlgItemMessage(hDlg, LIST_LOG, LB_ADDSTRING, 0, (LPARAM)&buf);
-}
-
-void performADExplorerCapture(HWND hDlg, HMENU menu) {
-	MENUITEMINFO mi = { 0 };
-	HANDLE hFile;
-	TCHAR log[100];
-	DWORD dwWritten;
 
 	mi.cbSize = sizeof(MENUITEMINFO);
 	mi.fMask = MIIM_STATE;
