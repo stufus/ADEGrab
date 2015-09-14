@@ -9,7 +9,7 @@ void addLog(HWND hDlg, TCHAR *message) {
 	TCHAR buf[400] = { 0 };
 
 	GetLocalTime(&lt);
-	StringCbPrintf((STRSAFE_LPWSTR) &buf, 400, TEXT("[%d/%d/%d %d:%d:%d] %s"), lt.wDay, lt.wMonth, lt.wYear, lt.wHour, lt.wMinute, lt.wSecond, message);
+	StringCbPrintf((STRSAFE_LPSTR) &buf, 400, TEXT("[%d/%d/%d %d:%d:%d] %s"), lt.wDay, lt.wMonth, lt.wYear, lt.wHour, lt.wMinute, lt.wSecond, message);
 	SendDlgItemMessage(hDlg, LIST_LOG, LB_ADDSTRING, 0, (LPARAM)&buf);
 }
 
