@@ -8,6 +8,28 @@ Initially, I wrote a DLL to hook the windows messages to AD Explorer's ListView 
 
 A simpler method is to send windows messages such as LVM_GETITEM to the ListView control in order to extract the data, column by column. However, processes cannot write to other process' memory, meaning that it was not as simple as simply sending LVM_GETITEM. The way that I chose to deal with this is to read and write directly from AD Explorer's memory.
 
+When attempting to capture the listbox contents, ADEGrab:
+
+1. Attempts to retrieve a handle to the Search Container SysListView32 control (i.e. the results list).
+2. Retrieve a couple of handles (thread and process) of the instance of AD Explorer that owns the control above and gain read/write access to the process.
+3. Sends the LVM_GETITEMCOUNT message to the ListView control to retrieve the number of items in the list.
+4. Calculate the amount of buffer space needed to store everything. On the assumption that each 'cell' will be no more than 250 characters in length, calculate 2*(number+2). The +2 is for the \r\n linefeed characters, and the multiplication by 2 is because we are retrieving Unicode characters.
+5. Working on the same assumption that we are going to retrieve a maximum of 250 characters on each cell, allocate a block of memory to store a LVITEM struct with a (250*2)+1 byte buffer below it. 250*2 because it is unicode, and the +1 for the null terminator. In order to keep this simple, I created a struct called ADMemInject that has two items; an LVITEM and a suitably sized TCHAR buffer.
+ 
+ The reason for this is the way that interacting with ListView controls actually works. In order to retrieve an item from a ListView control, you need to send it an LVM_GETITEM message, with lParam pointing to an LVITEM struct that contains details on which item to receive. The key component here is the iItem variable, which is the zero-indexed item position to receive. When the ListView receives that message, it will go to the cell at the iItem'th position and, providing the flags such as mask are set correctly, it will copy the text into the buffer that pszText points to. 
+ However, processes cannot usually access memory belonging to other processes, so you cannot simply create a buffer using malloc/calloc or similar, because that would be created inside ADEGrab's process. I therefore used VirtualAlloc to create a block of memory inside AD Explorer's process (that's why #2 was necessary), copied the ADMemInject struct into it and made sure that the pszText parameter pointed to the block of memory immediately after the struct. The idea is that the ListView control will read the struct and copy the item's text to the memory directly 'after' the LVITEM struct itself. 
+
+6. Copy the local variable to AD Explorer's buffer and send the LVM_GETITEM message. This will cause AD Explorer's ListView to write the cell contents to its own buffer, which is allowed. 
+7. Read that block of memory back into ADEGrab's process. This will always be safe because we allocated the memory block; it gave us a virtual memory address inside AD Explorer's process, so we can safely interact with it as much as we like until we release the handle or AD Explorer closes.
+8. Append the text to the complete buffer, with the terminating \r\n.
+
+Once each item has been retrieved from the ListView control, the handles are closed and the relevant memory freed. We now have a large Unicode buffer with a newline-separated list of every item that has been retrieved from the ListView control. ADEGrab now performs two optional activities.
+
+1. If the Clipboard menu option is ticked, ADEGrab converts the buffer to ANSI and copies it to clipboard.
+2. If the Log File menu option is ticked, ADEGrab opens "adegrab.log" and appends the ANSI buffer to it.
+
+It then displays a balloon tip (in the system tray) to the user, informing them of the captured data.
+
 # Usage
 - Load AD Explorer and connect to the domain that you wish to browse.
 - Load the 'Search Container' (i.e. Search for something).
