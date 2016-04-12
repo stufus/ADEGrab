@@ -66,3 +66,7 @@ Additional functionality that I will stabilise and release will include:
 # Disclaimer
 
 This was a tool that I put together in an evening in order to solve a problem. It has not been thoroughly tested against every possible scenario, but is a handy tool if you are in this position. 
+
+# Further Reading
+
+https://labs.mwrinfosecurity.com/blog/memory-allocation-how-injecting-into-your-own-tools-might-help-you-compromise-a-windows-domain/
